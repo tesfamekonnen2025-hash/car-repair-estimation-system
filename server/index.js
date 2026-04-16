@@ -18,16 +18,25 @@ app.use(express.urlencoded({ extended: true }));
 // MongoDB Connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/car_repair_estimation';
 
-mongoose.connect(MONGODB_URI)
-  .then(() => {
+const connectDB = async () => {
+  try {
+    console.log('Attempting to connect to MongoDB...');
+    await mongoose.connect(MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000,
+    });
     console.log('Connected to MongoDB Atlas successfully');
     console.log('Database Name:', mongoose.connection.name);
-  })
-  .catch(err => {
+  } catch (err) {
     console.error('CRITICAL: MongoDB connection error:', err.message);
-    console.error('Check if your IP is whitelisted in Atlas (0.0.0.0/0)');
-    console.error('Check if MONGODB_URI password is URL encoded');
-  });
+    // Don't exit process, let Render health check handle it or retry
+  }
+};
+
+connectDB();
+
+// Remove dns.setServers as it can break internal networking on Render
+// dns.setServers(['8.8.8.8', '1.1.1.1']); 
 
 // Add connection monitoring
 mongoose.connection.on('error', err => {
