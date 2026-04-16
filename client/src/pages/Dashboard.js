@@ -37,7 +37,7 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const response = await axios.get('/api/dashboard/stats');
+      const response = await axios.get('/api/dashboard/stats', { timeout: 10000 });
       setStats(response.data);
       
       // Set low stock alerts
@@ -47,6 +47,7 @@ const Dashboard = () => {
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
+      setAlerts([{ type: 'error', message: 'Failed to load dashboard data. Please check your connection or try again later.' }]);
     } finally {
       setLoading(false);
     }

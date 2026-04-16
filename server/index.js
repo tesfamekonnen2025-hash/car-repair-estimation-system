@@ -28,6 +28,16 @@ app.use('/api/materials', require('./routes/materials'));
 app.use('/api/estimations', require('./routes/estimations'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+  const mongoStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    mongodb: mongoStatus
+  });
+});
+
 // Serve static files from React build (Render / production deploy)
 const clientBuildPath = path.join(__dirname, '../client/build');
 if (fs.existsSync(clientBuildPath)) {
