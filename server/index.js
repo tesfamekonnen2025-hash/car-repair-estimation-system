@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const dns = require('dns');
+const fs = require('fs');
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
@@ -27,12 +28,13 @@ app.use('/api/materials', require('./routes/materials'));
 app.use('/api/estimations', require('./routes/estimations'));
 app.use('/api/dashboard', require('./routes/dashboard'));
 
-// Serve static files from React build in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../client/build')));
-  
+// Serve static files from React build (Render / production deploy)
+const clientBuildPath = path.join(__dirname, '../client/build');
+if (fs.existsSync(clientBuildPath)) {
+  app.use(express.static(clientBuildPath));
+
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
   });
 }
 
