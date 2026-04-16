@@ -19,8 +19,24 @@ app.use(express.urlencoded({ extended: true }));
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/car_repair_estimation';
 
 mongoose.connect(MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('MongoDB connection error:', err));
+  .then(() => {
+    console.log('Connected to MongoDB Atlas successfully');
+    console.log('Database Name:', mongoose.connection.name);
+  })
+  .catch(err => {
+    console.error('CRITICAL: MongoDB connection error:', err.message);
+    console.error('Check if your IP is whitelisted in Atlas (0.0.0.0/0)');
+    console.error('Check if MONGODB_URI password is URL encoded');
+  });
+
+// Add connection monitoring
+mongoose.connection.on('error', err => {
+  console.error('Mongoose runtime error:', err);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('Mongoose disconnected');
+});
 
 // Routes
 app.use('/api/cars', require('./routes/cars'));
