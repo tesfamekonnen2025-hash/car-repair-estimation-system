@@ -10,12 +10,22 @@ import Reports from './pages/Reports';
 import './styles.css';
 
 function App() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth > 1024);
+
+  // Close sidebar on route change on mobile
+  const handleRouteChange = () => {
+    if (window.innerWidth <= 1024) {
+      setIsSidebarOpen(false);
+    }
+  };
 
   return (
     <div className="app">
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
-      <main className={`main-content ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      <main 
+        className={`main-content ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}
+        onClick={() => isSidebarOpen && window.innerWidth <= 1024 && setIsSidebarOpen(false)}
+      >
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/dashboard" element={<Dashboard />} />
