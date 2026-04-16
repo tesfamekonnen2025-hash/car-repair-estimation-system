@@ -1326,6 +1326,14 @@ body {
 /* =====================
    Responsive Design
    ===================== */
+.hide-on-mobile {
+  display: table-cell;
+}
+
+.mobile-only-info {
+  display: none;
+}
+
 @media (max-width: 1024px) {
   .sidebar {
     transform: translateX(-100%);
@@ -1352,6 +1360,15 @@ body {
   .modal-container {
     max-height: 95vh;
     margin: 10px;
+  }
+
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .mobile-only-info {
+    display: block;
+    margin-top: 4px;
   }
 }
 

@@ -227,18 +227,23 @@ const MaterialStock = () => {
           <thead>
             <tr>
               <th>Material</th>
-              <th>Category</th>
+              <th className="hide-on-mobile">Category</th>
+              <th className="hide-on-mobile">Unit</th>
+              <th>Unit Price</th>
+              <th>Stock</th>
+              <th className="hide-on-mobile">Min Level</th>
+              <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="3" className="loading-cell">Loading...</td>
+                <td colSpan="8" className="loading-cell">Loading...</td>
               </tr>
             ) : filteredMaterials.length === 0 ? (
               <tr>
-                <td colSpan="3" className="empty-cell">
+                <td colSpan="8" className="empty-cell">
                   <div className="empty-state">
                     <Package size={48} className="empty-icon" />
                     <p>No materials found</p>
@@ -250,6 +255,7 @@ const MaterialStock = () => {
               </tr>
             ) : (
               filteredMaterials.map((material) => {
+                const stockStatus = getStockStatus(material);
                 return (
                   <tr key={material._id}>
                     <td>
@@ -258,11 +264,40 @@ const MaterialStock = () => {
                         {material.description && (
                           <small className="material-desc">{material.description}</small>
                         )}
+                        <div className="mobile-only-info">
+                          <span className={`category-badge category-${material.category}`}>
+                            {material.category.replace('_', ' ')}
+                          </span>
+                        </div>
                       </div>
                     </td>
-                    <td>
+                    <td className="hide-on-mobile">
                       <span className={`category-badge category-${material.category}`}>
                         {material.category.replace('_', ' ')}
+                      </span>
+                    </td>
+                    <td className="hide-on-mobile">{material.unit}</td>
+                    <td className="currency">
+                      ${material.price.toFixed(2)}
+                    </td>
+                    <td>
+                      <div className="stock-display">
+                        <span className={material.stockQuantity <= material.minStockLevel ? 'stock-low' : ''}>
+                          {material.stockQuantity}
+                        </span>
+                        <button
+                          className="btn-icon btn-small"
+                          onClick={() => openStockModal(material)}
+                          title="Update Stock"
+                        >
+                          <PlusIcon size={14} />
+                        </button>
+                      </div>
+                    </td>
+                    <td className="hide-on-mobile">{material.minStockLevel}</td>
+                    <td>
+                      <span className={`status-badge ${stockStatus.class}`}>
+                        {stockStatus.label}
                       </span>
                     </td>
                     <td>
