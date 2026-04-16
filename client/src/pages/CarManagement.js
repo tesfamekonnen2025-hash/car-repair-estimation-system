@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
   Plus,
@@ -14,6 +15,7 @@ import AlertBanner from '../components/AlertBanner';
 import ConfirmModal from '../components/ConfirmModal';
 
 const CarManagement = () => {
+  const navigate = useNavigate();
   const [cars, setCars] = useState([]);
   const [brands, setBrands] = useState([]);
   const [materials, setMaterials] = useState({ fabrics: [], sponges: [], glues: [] });
@@ -102,6 +104,9 @@ const CarManagement = () => {
       if (editingCar) {
         await axios.put(`/api/cars/${editingCar._id}`, formData);
         setAlerts([{ type: 'success', message: 'Car updated successfully' }]);
+        setTimeout(() => {
+          navigate('/');
+        }, 1500);
       } else {
         await axios.post('/api/cars', formData);
         setAlerts([{ type: 'success', message: 'Car added successfully' }]);
